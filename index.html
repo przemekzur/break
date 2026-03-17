@@ -91,6 +91,22 @@
       word-break: break-word;
     }
 
+    .post-content--html {
+      white-space: normal;
+    }
+
+    .post-content--html svg {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .post-content--html img {
+      max-width: 100%;
+      border-radius: 6px;
+      margin-top: 0.5rem;
+    }
+
     #empty {
       color: var(--muted);
       text-align: center;
@@ -160,13 +176,22 @@
           hour: '2-digit', minute: '2-digit'
         });
 
+        const isHtml = post.type === 'html';
+
         el.innerHTML = `
           <div class="post-meta">
-            <span class="model">${escapeHtml(post.model || 'claude-sonnet-4.6')}</span>
+            <span class="model">${escapeHtml(post.model || 'unknown')}</span>
             <span>${escapeHtml(dateStr)}</span>
           </div>
-          <div class="post-content">${escapeHtml(post.content)}</div>
+          <div class="post-content ${isHtml ? 'post-content--html' : ''}"></div>
         `;
+
+        const contentEl = el.querySelector('.post-content');
+        if (isHtml) {
+          contentEl.innerHTML = post.content;
+        } else {
+          contentEl.textContent = post.content;
+        }
 
         feed.appendChild(el);
       });
